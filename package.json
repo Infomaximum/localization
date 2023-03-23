@@ -1,0 +1,45 @@
+{
+  "name": "@infomaximum/localization",
+  "version": "1.0.4",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "files": [
+    "./dist",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "release": "tsc --noEmit && standard-version && rollup -c"
+  },
+  "dependencies": {
+    "@infomaximum/assert": "^1.0.0"
+  },
+  "devDependencies": {
+    "@infomaximum/config": "^2.0.0",
+    "rollup": "3.20.0",
+    "@rollup/plugin-typescript": "11.0.0",
+    "standard-version": "9.5.0",
+    "tslib": "^2.4.1",
+    "typescript": "5.0.2"
+  },
+  "description": "Localization for js applications",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Infomaximum/localization.git"
+  },
+  "keywords": [
+    "localization",
+    "js-localization",
+    "react-localization"
+  ],
+  "author": "Infomaximum Frontend Team (https://infomaximum.com)",
+  "bugs": {
+    "url": "https://github.com/Infomaximum/localization/issues"
+  },
+  "homepage": "https://github.com/Infomaximum/localization#readme"
+}
