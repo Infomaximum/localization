@@ -64,6 +64,36 @@ export interface ILocalizationProps
 export class Localization {
   public static Language = ELanguages;
 
+  public static translateText = (() => {
+      let localization: Localization | null = null;
+      const supportedLanguages = Object.values(Localization.Language)
+
+      return <
+        L extends TLocalizationDescription,
+        P extends ILocalizationProps = TExtractLocalizationParams<L>,
+      >(
+          language: ELanguages,
+          locObj: L,
+          props?: P
+        ): string => {
+          if (!localization || localization.getLanguage() !== language) {
+            const isSupportLanguage = supportedLanguages.includes(language);
+
+            !isSupportLanguage &&
+              console.error(
+                `An unsupported "${language}" language has been passed. The default language is English`
+              );
+
+            const lang = isSupportLanguage ? language : Localization.Language.en;
+
+            localization = new Localization({ language: lang });
+          }
+
+          return localization.getLocalized<L, P>(locObj, props);
+        }
+    }
+  )();
+
   private static PluralType = {
     SINGULAR: "s",
     PLURAL_1: "p1",
