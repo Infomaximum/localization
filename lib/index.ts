@@ -117,6 +117,43 @@ export class Localization {
     this.language = params.language;
   }
 
+  /**
+   * Получает локализованный текст на основе переданного языка и объекта локализации.
+   * @param {ELanguages} language - Текущий язык, на котором должен быть возвращен локализованный текст.
+   * @param {L} locObj - Объект локализации, содержащий тексты на разных языках.
+   * @param {P} [props] - Дополнительные параметры локализации.
+   * @returns {string} - Локализованный текст для указанного языка.
+   */
+  public static getLocalizedTextSafe = (() => {
+      let localization: Localization | null = null;
+      const supportedLanguages = Object.values(Localization.Language)
+
+      return <
+        L extends TLocalizationDescription,
+        P extends ILocalizationProps = TExtractLocalizationParams<L>,
+      >(
+          language: ELanguages,
+          locObj: L,
+          props?: P
+        ): string => {
+          if (!localization || localization.getLanguage() !== language) {
+            const isSupportLanguage = supportedLanguages.includes(language);
+
+            !isSupportLanguage &&
+              console.error(
+                `An unsupported "${language}" language has been passed. The default language is English`
+              );
+
+            const lang = isSupportLanguage ? language : Localization.Language.en;
+
+            localization = new Localization({ language: lang });
+          }
+
+          return localization.getLocalized<L, P>(locObj, props);
+        }
+    }
+  )();
+
   /** Возвращает установленный язык*/
   public getLanguage(): ELanguages {
     return this.language || this.getBrowserLanguage();
