@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0-legacy.2](https://github.com/Infomaximum/localization/compare/v1.2.0-legacy.1...v1.2.0-legacy.2) (2026-05-20)
+
+
+### Features
+
+* добавлено предупреждение о устаревшем подходе к локализации ([142e121](https://github.com/Infomaximum/localization/commit/142e1210a8b432f4faa3b882457fdaadc49690e0))
+
 ## [1.2.0-legacy.1](https://github.com/Infomaximum/localization/compare/v1.2.0-legacy.0...v1.2.0-legacy.1) (2026-05-20)
 
 
