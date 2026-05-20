@@ -1,6 +1,6 @@
 {
   "name": "@infomaximum/localization",
-  "version": "1.2.0-legacy.0",
+  "version": "1.2.0-legacy.1",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
