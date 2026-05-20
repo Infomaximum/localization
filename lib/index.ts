@@ -37,6 +37,7 @@ export type TExtractLocalizationParams<T extends TLocalizationDescription> =
       ? IPluralLocParams
       : ICommonLocParams;
 
+/** @deprecated используйте новый подход к локализации */
 export type TLocalizationFunctionalDescription = (
   ...args: any[]
 ) => string | TLocalizationPluralDescription;
@@ -61,6 +62,7 @@ export type TLocalizationParams = {
 export interface ILocalizationProps
   extends Partial<ITemplateLocParams<unknown>>, Partial<IPluralLocParams> {}
 
+/** @deprecated используйте новый подход к локализации */
 export class Localization {
   public static Language = ELanguages;
 
