@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "removeComments": false
   },
   "include": ["lib"],
   "exclude": ["node_modules"]
