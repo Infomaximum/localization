@@ -32,10 +32,10 @@ export type TExtractLocalizationParams<T extends TLocalizationDescription> =
   }
     ? ITemplateLocParams<P[0]>
     : T extends {
-        [K in ELanguages]: TLocalizationPluralDescription;
-      }
-    ? IPluralLocParams
-    : ICommonLocParams;
+          [K in ELanguages]: TLocalizationPluralDescription;
+        }
+      ? IPluralLocParams
+      : ICommonLocParams;
 
 export type TLocalizationFunctionalDescription = (
   ...args: any[]
@@ -47,6 +47,7 @@ type TLocalizationPluralDescription = {
   p2?: string;
 };
 
+/** @deprecated используйте t для локализации строк */
 export type TLocalizationDescription = Record<
   ELanguages,
   string | TLocalizationFunctionalDescription | TLocalizationPluralDescription
@@ -58,8 +59,7 @@ export type TLocalizationParams = {
 };
 
 export interface ILocalizationProps
-  extends Partial<ITemplateLocParams<unknown>>,
-    Partial<IPluralLocParams> {}
+  extends Partial<ITemplateLocParams<unknown>>, Partial<IPluralLocParams> {}
 
 export class Localization {
   public static Language = ELanguages;
@@ -72,7 +72,7 @@ export class Localization {
 
   private static GetPlurableEn(
     count: number,
-    locals: TLocalizationPluralDescription
+    locals: TLocalizationPluralDescription,
   ) {
     if (count === 1) {
       return locals[Localization.PluralType.SINGULAR];
@@ -83,7 +83,7 @@ export class Localization {
 
   private static GetPlurableRu(
     count: number,
-    locals: TLocalizationPluralDescription
+    locals: TLocalizationPluralDescription,
   ) {
     const rest = count % 100;
 
@@ -111,6 +111,7 @@ export class Localization {
     }
   }
 
+  /** @deprecated используйте i18n из useSystemTranslations */
   private language: ELanguages;
 
   constructor(params: TLocalizationParams) {
@@ -119,42 +120,45 @@ export class Localization {
 
   /**
    * Получает локализованный текст на основе переданного языка и объекта локализации.
+   * @deprecated используйте новый подход по локализации
    * @param {ELanguages} language - Текущий язык, на котором должен быть возвращен локализованный текст.
    * @param {L} locObj - Объект локализации, содержащий тексты на разных языках.
    * @param {P} [props] - Дополнительные параметры локализации.
    * @returns {string} - Локализованный текст для указанного языка.
    */
   public static getLocalizedTextSafe = (() => {
-      let localization: Localization | null = null;
-      const supportedLanguages = Object.values(Localization.Language)
+    let localization: Localization | null = null;
+    const supportedLanguages = Object.values(Localization.Language);
 
-      return <
-        L extends TLocalizationDescription,
-        P extends ILocalizationProps = TExtractLocalizationParams<L>,
-      >(
-          language: ELanguages,
-          locObj: L,
-          props?: P
-        ): string => {
-          if (!localization || localization.getLanguage() !== language) {
-            const isSupportLanguage = supportedLanguages.includes(language);
+    return <
+      L extends TLocalizationDescription,
+      P extends ILocalizationProps = TExtractLocalizationParams<L>,
+    >(
+      language: ELanguages,
+      locObj: L,
+      props?: P,
+    ): string => {
+      if (!localization || localization.getLanguage() !== language) {
+        const isSupportLanguage = supportedLanguages.includes(language);
 
-            !isSupportLanguage &&
-              console.error(
-                `An unsupported "${language}" language has been passed. The default language is English`
-              );
+        !isSupportLanguage &&
+          console.error(
+            `An unsupported "${language}" language has been passed. The default language is English`,
+          );
 
-            const lang = isSupportLanguage ? language : Localization.Language.en;
+        const lang = isSupportLanguage ? language : Localization.Language.en;
 
-            localization = new Localization({ language: lang });
-          }
+        localization = new Localization({ language: lang });
+      }
 
-          return localization.getLocalized<L, P>(locObj, props);
-        }
-    }
-  )();
+      return localization.getLocalized<L, P>(locObj, props);
+    };
+  })();
 
-  /** Возвращает установленный язык*/
+  /** Возвращает установленный язык
+   *
+   * @deprecated используйте i18n.language из useSystemTranslations
+   */
   public getLanguage(): ELanguages {
     return this.language || this.getBrowserLanguage();
   }
@@ -172,13 +176,16 @@ export class Localization {
   /**
    * Возвращает строку, соответствующую переданной локализации и преобразованную
    * согласно параметрам
+   *
+   *  @deprecated используйте t из useSystemTranslations
+   *
    * @param {TLocalizationDescription} loc
    * @param {ILocalizationProps} props
    * @returns {string}
    */
   public getLocalized<
     L extends TLocalizationDescription,
-    P extends ILocalizationProps = TExtractLocalizationParams<L>
+    P extends ILocalizationProps = TExtractLocalizationParams<L>,
   >(loc: L, props?: P): string {
     assertSimple(!!loc, "Локализация не передана");
 
@@ -191,7 +198,7 @@ export class Localization {
     if (typeof locForLang === "function" || typeof locForLang === "object") {
       assertSimple(
         !!props,
-        `Не переданы дополнительные параметры для локализации`
+        `Не переданы дополнительные параметры для локализации`,
       );
     }
     const computedLoc =
@@ -208,12 +215,12 @@ export class Localization {
       case Localization.Language.en:
         return this.getMaybeCapitalized(
           Localization.GetPlurableEn(count, computedLoc),
-          isCapitalized
+          isCapitalized,
         );
       case Localization.Language.ru:
         return this.getMaybeCapitalized(
           Localization.GetPlurableRu(count, computedLoc),
-          isCapitalized
+          isCapitalized,
         );
       default:
         assertSimple(false, "Неподдерживаемый язык");
@@ -222,7 +229,7 @@ export class Localization {
 
   private getMaybeCapitalized(
     str: string,
-    isCapitalized: boolean | undefined
+    isCapitalized: boolean | undefined,
   ): string {
     return isCapitalized ? capitalize(str) : str;
   }
